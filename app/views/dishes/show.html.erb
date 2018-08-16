@@ -38,28 +38,6 @@
 <div class="row">
   <div class="col-md-12">
     <ul class="list-group">
-      <li class="list-group-item list-group-item-info">
-        Bookmarks
-      </li>
-
-      <% @dish.bookmarks.each do |bookmark| %>
-        <li class="list-group-item">
-          <a href="/bookmarks/<%= bookmark.id %>">
-            <%= bookmark.notes %>
-          </a>
-          <div class="btn-group btn-group-xs float-right">
-            <a href="/bookmarks/<%= bookmark.id %>" class="btn btn-primary">
-              <i class="fa fa-search-plus"></i>
-            </a>
-            <a href="/bookmarks/<%= bookmark.id %>/edit" class="btn btn-warning">
-              <i class="fa fa-edit"></i>
-            </a>
-            <a href="/delete_bookmark/<%= bookmark.id %>" class="btn btn-danger" rel="nofollow">
-              <i class="fa fa-trash-o"></i>
-            </a>
-          </div>
-        </li>
-      <% end %>
 
       <li class="list-group-item">
         <form action="/create_bookmark" method="post">
@@ -97,37 +75,6 @@
   </div>
 </div>
 
-<!-- A Dish has many fans -->
-
-<div class="row">
-  <div class="col-md-12">
-    <ul class="list-group">
-      <li class="list-group-item list-group-item-info">
-        Fans
-      </li>
-
-      <% @dish.fans.each do |user| %>
-        <li class="list-group-item">
-          <a href="/users/<%= user.id %>">
-            <%= user.username %>
-          </a>
-          <div class="btn-group btn-group-xs float-right">
-            <a href="/users/<%= user.id %>" class="btn btn-primary">
-              <i class="fa fa-search-plus"></i>
-            </a>
-            <a href="/users/<%= user.id %>/edit" class="btn btn-warning">
-              <i class="fa fa-edit"></i>
-            </a>
-            <a href="/delete_user/<%= user.id %>" class="btn btn-danger" rel="nofollow">
-              <i class="fa fa-trash-o"></i>
-            </a>
-          </div>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-</div>
-
 <!-- A Dish has many specialists -->
 
 <div class="row">
@@ -138,22 +85,28 @@
       </li>
 
       <% @dish.specialists.each do |venue| %>
+        <% if Bookmark.where({venue_id: venue.id, user_id: current_user.id}).exists?%>
         <li class="list-group-item">
-          <a href="/venues/<%= venue.id %>">
-            <%= venue.name %>
-          </a>
-          <div class="btn-group btn-group-xs float-right">
-            <a href="/venues/<%= venue.id %>" class="btn btn-primary">
-              <i class="fa fa-search-plus"></i>
-            </a>
-            <a href="/venues/<%= venue.id %>/edit" class="btn btn-warning">
-              <i class="fa fa-edit"></i>
-            </a>
-            <a href="/delete_venue/<%= venue.id %>" class="btn btn-danger" rel="nofollow">
-              <i class="fa fa-trash-o"></i>
-            </a>
-          </div>
-        </li>
+            <p>
+              <a href="/venues/<%= venue.id %>">
+                <%= venue.name %>
+              </a>
+
+              <small class="float-right text-muted">
+                <%= time_ago_in_words(Bookmark.where({venue_id: venue.id, user_id: current_user.id})[0].created_at) %> ago
+
+                <a href="/bookmarks/<% Bookmark.where({venue_id: venue.id, user_id: current_user.id})[0].id %>/edit">
+                  <i class="fa fa-fw fa-edit"></i>
+                </a>
+
+                <a href="/delete_bookmark/47414">
+                  <i class="fa fa-fw fa-trash-o"></i>
+                </a>
+              </small>
+            </p>
+
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </div>
