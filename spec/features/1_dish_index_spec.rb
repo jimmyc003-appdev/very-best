@@ -56,6 +56,7 @@ describe "/dishes" do
     breakfast_cuisine = create(:cuisine_with_dishes)
 
     visit "/"
+    puts page.body
     page.find(:css, "a", text: "Show Filters").click
     page.find(:css, "label", text: american_cuisine.name).click
     page.find("#dishes_filters").find("input[type='submit']").click
