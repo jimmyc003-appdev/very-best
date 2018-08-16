@@ -102,7 +102,7 @@
           <td>
             <form action="/create_bookmark" class="form-inline" method="post">
               <input type="hidden" name="dish_id" value="<%= dish.id %>">
-              <input type="hidden" name="user_id" value="<%= Bookmark.find(dish.id).user_id %>">
+              <input type="hidden" name="user_id" value="<%= current_user.id %>">
                <label for="venue_id" class="control-label sr-only">
                   Venue
                 </label>
