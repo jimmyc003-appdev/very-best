@@ -1,96 +1,105 @@
-<div class="page-header">
-  <h1>
-    Dishes
-    <a href="/dishes/new" class="btn btn-lg btn-success">New Dish</a>
-  </h1>
-</div>
-<div class="row mb-1">
-  <div class="col-md-12">
-    <%= search_form_for @q, :class => "collapse", :id => "dishes_filters" do |f| %>
-      <p class="lead">Narrow results:</p>
+<!--main container-->
+<div class="container mt-4">
+  <!--container sizing -->
+  <div class="row mt-2 mb-1">
+    <!--left side filter collapse down -->
+    <div class="col-md-3">
+      <%= search_form_for @q, :class => "collapse", :id => "dishes_filters" do |f| %>
+        <p class="lead">Narrow results:</p>
 
         <div class="form-group">
-    <%= f.label :name_cont, "Name contains" %>
-    <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Name contains" %>
-  </div>
+          <%= f.label :name_cont, "Name contains" %>
+          <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Name contains" %>
+        </div>
 
-  <div class="form-group">
-    <a>Cuisine</a>
-    <p>
-    <% Cuisine.all.each do |cuisine| %>
-      <label>
-        <%= check_box_tag('q[cuisine_name_eq_any][]', cuisine.name, (true if @q.cuisine_name_eq_any.try(:include?, cuisine.name))) %>
-        <%= cuisine.name %>
-      </label>
-    <% end %>
-    </p>
-  </div>
+        <div class="form-group">
+          <a>Cuisine</a>
+          <p>
+            <% Cuisine.all.each do |cuisine| %>
+              <label>
+                <%= check_box_tag('q[cuisine_name_eq_any][]', cuisine.name, (true if @q.cuisine_name_eq_any.try(:include?, cuisine.name))) %>
+                <%= cuisine.name %>
+              </label>
+            <% end %>
+          </p>
+        </div>
 
-      <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
+        <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
 
-      <a href="/dishes" class="btn btn-secondary btn-block mb-1">Clear filters</a>
-    <% end %>
-    <a class="btn btn-secondary btn-block mb-1 collapsed" data-toggle="collapse" href="#dishes_filters">
-      Show Filters
-    </a>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>The very best...</th>
-        <th>is at...</th>
-        <th>Cuisine</th>
-        <th>Actions</th>
-      </tr>
-
-      <% @dishes.each do |dish| %>
-      <tr>
-        <td>
-          <a href="/dishes/<%= dish.id %>"><%= dish.name %></a>
-          </td>
-          <td>
-            <form action="/create_bookmark" class="form-inline" method="post">
-              <input type="hidden" name="dish_id" value="<%= dish.id %>">
-              <input type="hidden" name="user_id" value="<%= current_user.id %>">
-               <label for="venue_id" class="control-label sr-only">
-                  Venue
-                </label>
-                <select name="venue_id" id="venue_id" class="form-control form-control-sm mr-sm-1">
-                  <% Venue.all.each do |venue| %>
-                  <% if Bookmark.where(user_id: current_user.id, venue_id: venue.id, dish_id: dish.id).count == 1 %>
-                  <option value="<%= venue.id %>" selected="selected"><%= venue.name %></option>
-                <% else %>
-                  <option value="<%= venue.id %>"><%= venue.name %></option>
-                  <% end %>
-                  <% end %>
-                </select>
-                <button class="btn btn-primary btn-sm">
-                  <i class="fa fa-heart"></i>
-                </button>
-              </form>
-          </td>
-        <td>
-          <% if dish.cuisine.present? %>
-            <a href="/cuisines/<%= dish.cuisine.id %>">
-              <%= dish.cuisine.name %>
-            </a>
-          <% end %>
-        </td>
-        <td>
-          <a href="/dishes/<%= dish.id %>" class="btn btn-primary">Show</a>
-          <a href="/dishes/<%= dish.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_dish/<%= dish.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
+        <a href="/dishes" class="btn btn-secondary btn-block mb-1">Clear filters</a>
       <% end %>
-    </table>
-    <%= paginate @dishes, theme: 'twitter-bootstrap-4' %>
-  </div>
-</div>
+      <a class="btn btn-secondary btn-block mb-1 collapsed" data-toggle="collapse" href="#dishes_filters">
+        Show Filters
+      </a>
+    </div>
+    <!--end left column collapse down-->
+    <!--middle column very best content-->
+    <div class="col-md-6">
+      <div class="card">
+        <table class="table table-striped table-hover">
+          <tr>
+            <th>The very best...</th>
+            <th>is at...</th>
+          </tr>
 
-<a href="/venues/new" class="btn btn-block btn-success">
-      Add a new venue
-</a>
+          <% @dishes.each do |dish| %>
+            <tr>
+              <td>
+                <a href="/dishes/<%= dish.id %>"><%= dish.name %></a>
+              </td>
+              <td>
+                <form action="/create_bookmark" class="form-inline" method="post">
+                  <input type="hidden" name="dish_id" value="<%= dish.id %>">
+                  <input type="hidden" name="user_id" value="<%= current_user.id %>">
+                  <label for="venue_id" class="control-label sr-only">
+                    Venue
+                  </label>
+                  <select name="venue_id" id="venue_id" class="form-control form-control-sm mr-sm-1">
+                    <% Venue.all.each do |venue| %>
+                      <% if Bookmark.where(user_id: current_user.id, venue_id: venue.id, dish_id: dish.id).count == 1 %>
+                        <option value="<%= venue.id %>" selected="selected"><%= venue.name %></option>
+                      <% else %>
+                        <option value="<%= venue.id %>"><%= venue.name %></option>
+                      <% end %>
+                    <% end %>
+                  </select>
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fa fa-heart"></i>
+                  </button>
+                </form>
+              </td>
+              <td>
+                <% if dish.cuisine.present? %>
+                  <a href="/cuisines/<%= dish.cuisine.id %>">
+                    <%= dish.cuisine.name %>
+                  </a>
+                <% end %>
+              </td>
+              <!--<td>-->
+              <!--  <a href="/dishes/<#%= dish.id %>" class="btn btn-primary">Show</a>-->
+              <!--  <a href="/dishes/<#%= dish.id %>/edit" class="btn btn-warning">Edit</a>-->
+              <!--  <a href="/delete_dish/<#%= dish.id %>" class="btn btn-danger" rel="nofollow">Delete</a>-->
+              <!--</td>-->
+            </tr>
+          <% end %>
+        </table>
+        <%= paginate @dishes, theme: 'twitter-bootstrap-4' %>
+        <div class="card-footer text-center">
+
+        </div>
+      </div>
+    </div>
+    <!--end middle column very best content-->
+    <!--right column new buttons-->
+    <div class="col-md-3">
+      <div>
+        <a href="/dishes/new" class="btn btn-block btn-success">Add a new dish</a>
+      </div>
+      <div>
+        <a style="margin-top: 10px" href="/venues/new" class="btn btn-block btn-success">Add a new venue</a>
+      </div>
+    </div>
+    <!--container sizing-->
+  </div>
+  <!--main container-->
+</div>
