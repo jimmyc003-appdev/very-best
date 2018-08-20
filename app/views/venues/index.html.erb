@@ -101,13 +101,15 @@
             <th>Neighborhood</th>
           </tr>
 
-          <% @venues.each do |venue| %>
+          <% Bookmark.all.where(:user_id == current_user.id).each do |bookmark| %>
+          <!--<#% @venues.each do |venue| %>-->
+          <% venue=Venue.find(bookmark.venue_id) %>
             <tr>
-              <td><a href="/venues/<%=venue.id %>"><%= venue.name %></a></td>
+              <td><a href="/venues/<%= venue.id %>"><%= venue.name %></a></td>
               <td>
-                <% if venue.neighborhood.present? %>
-                  <a href="/neighborhoods/<%= venue.neighborhood.id %>">
-                    <%= venue.neighborhood.name %>
+                <% if venue.neighborhood_id.present? %>
+                  <a href="/neighborhoods/<%= venue.neighborhood_id %>">
+                    <%= Neighborhood.find(venue.neighborhood_id).name %>
                   </a>
                 <% end %>
               </td>
